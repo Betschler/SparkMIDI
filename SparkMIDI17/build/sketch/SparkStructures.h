@@ -3,7 +3,7 @@
 #define SparkStructures_h
 
 #define DEBUG(x) Serial.println(x);
-#define STR_LEN 40
+#define STR_LEN 128
 
 typedef struct  {
   uint8_t  curr_preset;

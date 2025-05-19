@@ -2,6 +2,9 @@
 #ifndef Screen_h
 #define Screen_h
 
+// Feature flags
+#define ENABLE_ICON_DISPLAY 0  // Set to 1 to enable icon display functionality
+
 #ifdef OLED_ON
 #include <SPI.h>
 #include <Wire.h>
@@ -82,9 +85,13 @@ Adafruit_SSD1306 display(128, 64, &Wire, -1);
 #define L_USB_MIDI_ICON (L_BLE_MIDI_ICON + L_LINES_GAP)
 #define L_SER_MIDI_ICON (L_USB_MIDI_ICON + L_LINES_GAP)
 
+#define STR_LEN 128  // Define string length for icon paths
+
 void splash_screen();
 void setup_screen();
 void show_status();
+#if ENABLE_ICON_DISPLAY
 void display_preset_icon(const char* icon_path, int x, int y);
+#endif
 
 #endif

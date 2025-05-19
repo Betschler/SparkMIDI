@@ -3,6 +3,8 @@
 
 #include "SparkIO.h"
 
+#define STR_LEN 128  // Define string length for icon paths
+
 // variables required to track spark state and also for communications generally
 unsigned int cmdsub;
 SparkMessage msg;
@@ -10,7 +12,10 @@ SparkPreset preset;
 SparkPreset presets[6];
 
 extern int current_preset;
+#if ENABLE_ICON_DISPLAY
 extern char current_preset_icon[STR_LEN];
+extern bool show_preset_name;
+#endif
 
 enum spark_status_values {SPARK_DISCONNECTED, SPARK_CONNECTED, SPARK_COMMUNICATING, SPARK_SYNCING, SPARK_SYNCED};
 spark_status_values spark_state;

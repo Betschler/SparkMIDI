@@ -116,6 +116,8 @@
   #include "SparkPresetFromSD.h"
 #endif
 
+bool show_preset_name = false;
+
 void setup() {
 
 #if defined HELTEC_WIFI
@@ -167,6 +169,7 @@ void loop() {
 
   if(M5.BtnC.wasPressed()) {
       DEBUG("Button C pressed!");  
+      show_preset_name = !show_preset_name;
   }  
 #endif
 

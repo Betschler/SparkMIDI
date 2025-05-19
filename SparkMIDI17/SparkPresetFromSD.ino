@@ -31,14 +31,15 @@ bool loadSparkPresetFromSD(SparkPreset* preset, const char* filename) {
   strncpy(preset->Name, doc["meta"]["name"].as<const char*>(), sizeof(preset->Name));
   strncpy(preset->Version, doc["meta"]["version"].as<const char*>(), sizeof(preset->Version));
   strncpy(preset->Description, doc["meta"]["description"].as<const char*>(), sizeof(preset->Description));
-  strncpy(preset->Icon, doc["meta"]["icon"].as<const char*>(), sizeof(preset->Icon));
+  String presetDir = String(filename);
+  presetDir = presetDir.substring(0, presetDir.lastIndexOf('/'));
+  String iconPath = presetDir + "/" + doc["meta"]["icon"].as<const char*>();
+  strncpy(preset->Icon, iconPath.c_str(), sizeof(preset->Icon));
   preset->BPM = doc["bpm"].as<float>();
 
   const JsonArray& sigpath = doc["sigpath"];
   size_t sigpathSize = sigpath.size();
 
-  // Parse sigpath array
-    DEBUG("Parse sigpath array...");
   int i = 0;
   for (auto fx : sigpath) {
     strncpy(preset->effects[i].EffectName, fx["dspId"].as<const char*>(), sizeof(preset->effects[i].EffectName));
@@ -65,7 +66,7 @@ bool loadSparkPresetCustom(int genre, int index) {
   
   if (!SD.exists(folderName)) {
     // Genre folder doesn't exist
-    DEBUG("Genre folder :" +folderName+ "doesn't exist!");
+    DEBUG("Genre folder: " +folderName+ "doesn't exist!");
     File root= SD.open("/");
     //printDirectory(root,0);
     return false;

@@ -118,9 +118,11 @@
   #include "SparkPresetFromSD.h"
 #endif
 
-#line 119 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkMIDI17.ino"
+bool show_preset_name = false;
+
+#line 121 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkMIDI17.ino"
 void setup();
-#line 151 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkMIDI17.ino"
+#line 153 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkMIDI17.ino"
 void loop();
 #line 51 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\MIDI.ino"
 void setup_midi();
@@ -132,8 +134,6 @@ void splash_screen();
 void setup_screen();
 #line 200 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\Screen.ino"
 void show_status();
-#line 345 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\Screen.ino"
-void display_preset_icon(const char* icon_path, int x, int y);
 #line 9 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\Spark.ino"
 int get_effect_index(char *str);
 #line 22 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\Spark.ino"
@@ -258,13 +258,13 @@ void spark_process();
 void app_process();
 #line 4 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkPresetFromSD.ino"
 bool loadSparkPresetFromSD(SparkPreset* preset, const char* filename);
-#line 57 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkPresetFromSD.ino"
+#line 58 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkPresetFromSD.ino"
 bool loadSparkPresetCustom(int genre, int index);
-#line 116 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkPresetFromSD.ino"
+#line 117 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkPresetFromSD.ino"
 void printDirectory(File dir, int numTabs);
-#line 140 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkPresetFromSD.ino"
+#line 141 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkPresetFromSD.ino"
 void debugOutput(SparkPreset* preset);
-#line 119 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkMIDI17.ino"
+#line 121 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\SparkMIDI17.ino"
 void setup() {
 
 #if defined HELTEC_WIFI
@@ -316,6 +316,7 @@ void loop() {
 
   if(M5.BtnC.wasPressed()) {
       DEBUG("Button C pressed!");  
+      show_preset_name = !show_preset_name;
   }  
 #endif
 
@@ -963,32 +964,92 @@ void setup_screen() {
 
 void show_status() {
   int rad;
+#if ENABLE_ICON_DISPLAY
   static char last_icon[STR_LEN] = "";
   static int last_preset = -1;
+  static bool last_show_preset_name = false;
+#else
+  static int last_preset = -1;
+#endif
 
   if (millis() - now > 50) { // only do this evey 50ms so we don't keep redrawing!
     now = millis();
 
-    // Display preset icon if it has changed
+#if ENABLE_ICON_DISPLAY
+    // Display preset icon or name if it has changed
     #if defined M5CORE2 || defined M5CORE
-    if (current_preset != last_preset || strcmp(current_preset_icon, last_icon) != 0) {
-      // Clear the icon area
-      M5.Lcd.fillRect(0, L_LAST_COMMAND_TEXT + 40, 64, 64, TFT_BLACK);
-      // Display the new icon
-      display_preset_icon(current_preset_icon, 0, L_LAST_COMMAND_TEXT + 40);
+    if (current_preset != last_preset || strcmp(current_preset_icon, last_icon) != 0 || show_preset_name != last_show_preset_name) {
+      // Clear the entire display area for the icon/name
+      M5.Lcd.fillRect(0, 0, 320, 64, TFT_BLACK);
+      
+      if (show_preset_name) {
+        // Display preset name
+        M5.Lcd.setTextColor(TFT_WHITE);
+        M5.Lcd.setTextSize(2);
+        M5.Lcd.setCursor(0, 0);
+        M5.Lcd.print(presets[5].Name);
+      } else {
+        // Display the icon
+        DEBUG("Displaying icon at position: x=0, y=0");
+        display_preset_icon(current_preset_icon, 0, 0);
+      }
+      
       strncpy(last_icon, current_preset_icon, STR_LEN);
+      last_preset = current_preset;
+      last_show_preset_name = show_preset_name;
+    }
+    #elif defined M5STICK
+    if (current_preset != last_preset || strcmp(current_preset_icon, last_icon) != 0 || show_preset_name != last_show_preset_name) {
+      // Clear the entire display area for the icon/name
+      M5.Lcd.fillRect(0, SER_MIDI_TEXT + 20, 80, 160 - (SER_MIDI_TEXT + 20), TFT_BLACK);
+      
+      if (show_preset_name) {
+        // Display preset name
+        M5.Lcd.setTextColor(TFT_WHITE);
+        M5.Lcd.setTextSize(1);
+        M5.Lcd.setCursor(0, SER_MIDI_TEXT + 20);
+        M5.Lcd.print(presets[5].Name);
+      } else {
+        // Display the icon
+        DEBUG("Displaying icon at position: " + String(SER_MIDI_TEXT + 20));
+        display_preset_icon(current_preset_icon, 0, SER_MIDI_TEXT + 20);
+      }
+      
+      strncpy(last_icon, current_preset_icon, STR_LEN);
+      last_preset = current_preset;
+      last_show_preset_name = show_preset_name;
+    }
+    #endif
+#else
+    // Always display preset name when icon display is disabled
+    #if defined M5CORE2 || defined M5CORE
+    if (current_preset != last_preset) {
+      // Clear the preset name area
+      M5.Lcd.fillRect(0, L_LAST_COMMAND_TEXT + 40, 64, 64, TFT_BLACK);
+      
+      // Display preset name
+      M5.Lcd.setTextColor(TFT_WHITE);
+      M5.Lcd.setTextSize(1);
+      M5.Lcd.setCursor(0, 0);
+      M5.Lcd.print(presets[5].Name);
+      
       last_preset = current_preset;
     }
     #elif defined M5STICK
-    if (current_preset != last_preset || strcmp(current_preset_icon, last_icon) != 0) {
-      // Clear the icon area
-      M5.Lcd.fillRect(0, SER_MIDI_TEXT + 20, 32, 32, TFT_BLACK);
-      // Display the new icon
-      display_preset_icon(current_preset_icon, 0, SER_MIDI_TEXT + 20);
-      strncpy(last_icon, current_preset_icon, STR_LEN);
+    if (current_preset != last_preset) {
+      // Clear the preset name area
+      M5.Lcd.fillRect(0, SER_MIDI_TEXT + 20, 80, 160 - (SER_MIDI_TEXT + 20), TFT_BLACK);
+      
+      // Display preset name
+      M5.Lcd.setTextColor(TFT_WHITE);
+      M5.Lcd.setTextSize(1);
+      M5.Lcd.setCursor(0, SER_MIDI_TEXT + 20);
+      M5.Lcd.print(presets[5].Name);
+      
       last_preset = current_preset;
     }
     #endif
+#endif
 
     #ifdef OLED_ON
     for (int i = 0; i <= 1; i++) 
@@ -1048,7 +1109,6 @@ void show_status() {
       M5.Lcd.print(last_command_sent);
     }
 
-
     for (int i = 0; i <= 1; i++) 
       for (int j = 0; j < NUM_CONNS; j++) 
         if (now - conn_last_changed[i][j] <= 900) {
@@ -1106,11 +1166,39 @@ void show_status() {
   }
 }
 
+#if ENABLE_ICON_DISPLAY
 void display_preset_icon(const char* icon_path, int x, int y) {
 #if defined M5CORE2 || defined M5CORE
+  DEBUG("=== Icon Display Debug ===");
+  DEBUG("Attempting to display icon from path: ");
+  DEBUG(icon_path);
+  DEBUG("At position: x=" + String(x) + ", y=" + String(y));
+  
   if (SD.exists(icon_path)) {
-    M5.Lcd.drawJpgFile(SD, icon_path, x, y);
+    DEBUG("Icon file exists, attempting to draw");
+    File iconFile = SD.open(icon_path);
+    if (iconFile) {
+      DEBUG("Icon file opened successfully");
+      size_t fileSize = iconFile.size();
+      DEBUG("Icon file size: " + String(fileSize));
+      iconFile.close();
+      
+      // Draw the PNG with explicit dimensions
+      DEBUG("Attempting to draw PNG file...");
+      M5.Lcd.drawPngFile(SD, icon_path, x, y, 64, 64);
+      DEBUG("PNG draw completed");
+    } else {
+      DEBUG("Failed to open icon file");
+      // Draw error placeholder
+      M5.Lcd.fillRect(x, y, 64, 64, TFT_BLACK);
+      M5.Lcd.drawRect(x, y, 64, 64, TFT_RED);
+      M5.Lcd.setTextColor(TFT_RED);
+      M5.Lcd.setTextSize(1);
+      M5.Lcd.setCursor(x + 2, y + 2);
+      M5.Lcd.print("Open Error");
+    }
   } else {
+    DEBUG("Icon file not found at path: " + String(icon_path));
     // Draw a placeholder if icon not found
     M5.Lcd.fillRect(x, y, 64, 64, TFT_BLACK);
     M5.Lcd.drawRect(x, y, 64, 64, TFT_WHITE);
@@ -1119,10 +1207,38 @@ void display_preset_icon(const char* icon_path, int x, int y) {
     M5.Lcd.setCursor(x + 2, y + 2);
     M5.Lcd.print("No Icon");
   }
+  DEBUG("=== End Icon Display Debug ===");
 #elif defined M5STICK
+  DEBUG("=== Icon Display Debug ===");
+  DEBUG("Attempting to display icon from path: ");
+  DEBUG(icon_path);
+  DEBUG("At position: x=" + String(x) + ", y=" + String(y));
+  
   if (SD.exists(icon_path)) {
-    M5.Lcd.drawJpgFile(SD, icon_path, x, y);
+    DEBUG("Icon file exists, attempting to draw");
+    File iconFile = SD.open(icon_path);
+    if (iconFile) {
+      DEBUG("Icon file opened successfully");
+      size_t fileSize = iconFile.size();
+      DEBUG("Icon file size: " + String(fileSize));
+      iconFile.close();
+      
+      // Draw the PNG with explicit dimensions
+      DEBUG("Attempting to draw PNG file...");
+      M5.Lcd.drawPngFile(SD, icon_path, x, y, 32, 32);
+      DEBUG("PNG draw completed");
+    } else {
+      DEBUG("Failed to open icon file");
+      // Draw error placeholder
+      M5.Lcd.fillRect(x, y, 32, 32, TFT_BLACK);
+      M5.Lcd.drawRect(x, y, 32, 32, TFT_RED);
+      M5.Lcd.setTextColor(TFT_RED);
+      M5.Lcd.setTextSize(1);
+      M5.Lcd.setCursor(x + 2, y + 2);
+      M5.Lcd.print("Open Error");
+    }
   } else {
+    DEBUG("Icon file not found at path: " + String(icon_path));
     // Draw a placeholder if icon not found
     M5.Lcd.fillRect(x, y, 32, 32, TFT_BLACK);
     M5.Lcd.drawRect(x, y, 32, 32, TFT_WHITE);
@@ -1131,8 +1247,10 @@ void display_preset_icon(const char* icon_path, int x, int y) {
     M5.Lcd.setCursor(x + 2, y + 2);
     M5.Lcd.print("No Icon");
   }
+  DEBUG("=== End Icon Display Debug ===");
 #endif
 }
+#endif
 
 #line 1 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\Spark.ino"
 ///// ROUTINES TO SYNC TO AMP SETTINGS
@@ -3523,14 +3641,15 @@ bool loadSparkPresetFromSD(SparkPreset* preset, const char* filename) {
   strncpy(preset->Name, doc["meta"]["name"].as<const char*>(), sizeof(preset->Name));
   strncpy(preset->Version, doc["meta"]["version"].as<const char*>(), sizeof(preset->Version));
   strncpy(preset->Description, doc["meta"]["description"].as<const char*>(), sizeof(preset->Description));
-  strncpy(preset->Icon, doc["meta"]["icon"].as<const char*>(), sizeof(preset->Icon));
+  String presetDir = String(filename);
+  presetDir = presetDir.substring(0, presetDir.lastIndexOf('/'));
+  String iconPath = presetDir + "/" + doc["meta"]["icon"].as<const char*>();
+  strncpy(preset->Icon, iconPath.c_str(), sizeof(preset->Icon));
   preset->BPM = doc["bpm"].as<float>();
 
   const JsonArray& sigpath = doc["sigpath"];
   size_t sigpathSize = sigpath.size();
 
-  // Parse sigpath array
-    DEBUG("Parse sigpath array...");
   int i = 0;
   for (auto fx : sigpath) {
     strncpy(preset->effects[i].EffectName, fx["dspId"].as<const char*>(), sizeof(preset->effects[i].EffectName));
@@ -3557,7 +3676,7 @@ bool loadSparkPresetCustom(int genre, int index) {
   
   if (!SD.exists(folderName)) {
     // Genre folder doesn't exist
-    DEBUG("Genre folder :" +folderName+ "doesn't exist!");
+    DEBUG("Genre folder: " +folderName+ "doesn't exist!");
     File root= SD.open("/");
     //printDirectory(root,0);
     return false;
