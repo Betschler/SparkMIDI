@@ -199,9 +199,32 @@ void setup_screen() {
 
 void show_status() {
   int rad;
+  static char last_icon[STR_LEN] = "";
+  static int last_preset = -1;
 
   if (millis() - now > 50) { // only do this evey 50ms so we don't keep redrawing!
     now = millis();
+
+    // Display preset icon if it has changed
+    #if defined M5CORE2 || defined M5CORE
+    if (current_preset != last_preset || strcmp(current_preset_icon, last_icon) != 0) {
+      // Clear the icon area
+      M5.Lcd.fillRect(0, L_LAST_COMMAND_TEXT + 40, 64, 64, TFT_BLACK);
+      // Display the new icon
+      display_preset_icon(current_preset_icon, 0, L_LAST_COMMAND_TEXT + 40);
+      strncpy(last_icon, current_preset_icon, STR_LEN);
+      last_preset = current_preset;
+    }
+    #elif defined M5STICK
+    if (current_preset != last_preset || strcmp(current_preset_icon, last_icon) != 0) {
+      // Clear the icon area
+      M5.Lcd.fillRect(0, SER_MIDI_TEXT + 20, 32, 32, TFT_BLACK);
+      // Display the new icon
+      display_preset_icon(current_preset_icon, 0, SER_MIDI_TEXT + 20);
+      strncpy(last_icon, current_preset_icon, STR_LEN);
+      last_preset = current_preset;
+    }
+    #endif
 
     #ifdef OLED_ON
     for (int i = 0; i <= 1; i++) 
@@ -317,4 +340,32 @@ void show_status() {
     
     last_time = now;
   }
+}
+
+void display_preset_icon(const char* icon_path, int x, int y) {
+#if defined M5CORE2 || defined M5CORE
+  if (SD.exists(icon_path)) {
+    M5.Lcd.drawJpgFile(SD, icon_path, x, y);
+  } else {
+    // Draw a placeholder if icon not found
+    M5.Lcd.fillRect(x, y, 64, 64, TFT_BLACK);
+    M5.Lcd.drawRect(x, y, 64, 64, TFT_WHITE);
+    M5.Lcd.setTextColor(TFT_WHITE);
+    M5.Lcd.setTextSize(1);
+    M5.Lcd.setCursor(x + 2, y + 2);
+    M5.Lcd.print("No Icon");
+  }
+#elif defined M5STICK
+  if (SD.exists(icon_path)) {
+    M5.Lcd.drawJpgFile(SD, icon_path, x, y);
+  } else {
+    // Draw a placeholder if icon not found
+    M5.Lcd.fillRect(x, y, 32, 32, TFT_BLACK);
+    M5.Lcd.drawRect(x, y, 32, 32, TFT_WHITE);
+    M5.Lcd.setTextColor(TFT_WHITE);
+    M5.Lcd.setTextSize(1);
+    M5.Lcd.setCursor(x + 2, y + 2);
+    M5.Lcd.print("No Icon");
+  }
+#endif
 }

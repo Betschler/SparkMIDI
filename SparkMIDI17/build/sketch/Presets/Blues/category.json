@@ -1,0 +1,115 @@
+#line 1 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\Presets\\Blues\\category.json"
+{
+    "meta": {
+        "id": "BB78B1A5-B68D-4111-B08F-079C00F2EF8C",
+        "description": "",
+        "name": "Blues"
+    },
+    "presets": [
+        {
+            "id": "9D2F2AA3-4EC5-4BD7-A3CD-A76FD55698DB",
+            "description": "Description for Blues Preset 1",
+            "name": "Wooden Bridge",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "B08F2421-0686-484E-B6EC-8F660A9344FC",
+            "description": "Description for Blues Preset 1",
+            "name": "Stone Breaker",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "55D60EB5-1735-4746-B0C4-16C53D8CA203",
+            "description": "Description for Blues Preset 1",
+            "name": "Country road",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "2E2928B5-D87E-4346-B58F-145B88C581BE",
+            "description": "1-Clean",
+            "name": "Blues Ark",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "235c0421-a93a-452a-853d-854fc4e2341d",
+            "description": "Cool cleans with this classic.  Just a small amount of chorus with a punchy compressor.  Spiced up with some digital delay and reverb for some great blues fun.",
+            "name": "Bend the Fend",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "88e1c21f-d208-42da-9daa-490fb6a88b95",
+            "description": "4-Metal",
+            "name": "SRV",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "428747f9-24e7-4535-91ea-ba4a02b9b60b",
+            "description": "best with single coil",
+            "name": "John mayer ish",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "39a57672-50ca-4ea6-8a81-f97872b6e83a",
+            "description": "here's another setting I made for BB king, enjoy",
+            "name": "BB king",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "62910648-e7bc-41fd-9846-2c0f801e9c22",
+            "description": "Similar to the clean tone on &quot;Lenny&quot;",
+            "name": "SRV Clean",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "b0bdb28c-6fe0-4650-8cdf-d81aa1a17f33",
+            "description": "4-Metal",
+            "name": "Blues Legend",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "31234c91-c20c-4552-b2f6-1dc5cd62a022",
+            "description": "Matchless with compressor and chorus",
+            "name": "Breezy Blues",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "8eefc93d-a366-49ca-86af-79733ca741b0",
+            "description": "",
+            "name": " Joe Bonamassa",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "b213fb7a-20cf-42a7-8fbf-0a2a3ffa336f",
+            "description": "Bold, tight sounding tweed with chorus.  Great for country, blues, even some clean channel ballads.  Pristine sound with just a hint of chorus.  ",
+            "name": "Bright Tweed",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "daef42b7-0ed4-4347-9d6f-f0b20de7a0f4",
+            "description": "Bold, tight sounding tweed with chorus.  Great for country, blues, even some clean channel ballads.  Pristine sound with just a hint of chorus.  ",
+            "name": "Bright Tweed",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "0a081522-3be6-4489-82be-5f76631f70a7",
+            "description": "overdriven tweed with reverb for some southwest blues",
+            "name": "Tex Mex Blues",
+            "version": "0.7",
+            "icon": "icon.png"
+        }
+    ]
+}

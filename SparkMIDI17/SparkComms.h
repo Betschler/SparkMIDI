@@ -9,6 +9,9 @@
 #include <BLE2902.h>
 #else
 #include "NimBLEDevice.h"
+#include "NimBLEServer.h"
+#include "NimBLEClient.h"
+#include "NimBLEUtils.h"
 #endif
 
 #include "RingBuffer.h"
@@ -27,7 +30,6 @@
 // Bluetooth app MIDI
 //#define NOTHING
 
-
 #define NUM_CONNS 5
 
 #define TO 0
@@ -43,7 +45,6 @@ void set_conn_received(int connection);
 void set_conn_sent(int connection);
 //New
 String last_command_sent="";
-
 
 #define BLE_BUFSIZE 5000
 
@@ -96,37 +97,36 @@ bool found_pedal;
 bool connected_sp;
 bool found_sp;
 
-
-BLEServer *pServer;
-BLEService *pService;
-BLECharacteristic *pCharacteristic_receive;
-BLECharacteristic *pCharacteristic_send;
+NimBLEServer *pServer;
+NimBLEService *pService;
+NimBLECharacteristic *pCharacteristic_receive;
+NimBLECharacteristic *pCharacteristic_send;
 
 #ifdef BLE_APP_MIDI
-BLEService *pServiceMIDI;
-BLECharacteristic *pCharacteristicMIDI;
+NimBLEService *pServiceMIDI;
+NimBLECharacteristic *pCharacteristicMIDI;
 #endif
 
-BLEAdvertising *pAdvertising;
+NimBLEAdvertising *pAdvertising;
 
-BLEScan *pScan;
-BLEScanResults pResults;
-BLEAdvertisedDevice device;
+NimBLEScan *pScan;
+NimBLEScanResults pResults;
+NimBLEAdvertisedDevice device;
 
-BLEClient *pClient_sp;
-BLERemoteService *pService_sp;
-BLERemoteCharacteristic *pReceiver_sp;
-BLERemoteCharacteristic *pSender_sp;
-BLERemoteDescriptor* p2902_sp;
-BLEAdvertisedDevice *sp_device;
+NimBLEClient *pClient_sp;
+NimBLERemoteService *pService_sp;
+NimBLERemoteCharacteristic *pReceiver_sp;
+NimBLERemoteCharacteristic *pSender_sp;
+NimBLERemoteDescriptor* p2902_sp;
+NimBLEAdvertisedDevice *sp_device;
 
 #ifdef BLE_CONTROLLER
-BLEClient *pClient_pedal;
-BLERemoteService *pService_pedal;
-BLERemoteCharacteristic *pReceiver_pedal;
-BLERemoteCharacteristic *pSender_pedal;
-BLERemoteDescriptor* p2902_pedal;
-BLEAdvertisedDevice *pedal_device;
+NimBLEClient *pClient_pedal;
+NimBLERemoteService *pService_pedal;
+NimBLERemoteCharacteristic *pReceiver_pedal;
+NimBLERemoteCharacteristic *pSender_pedal;
+NimBLERemoteDescriptor* p2902_pedal;
+NimBLEAdvertisedDevice *pedal_device;
 #endif
 
 RingBuffer ble_in;

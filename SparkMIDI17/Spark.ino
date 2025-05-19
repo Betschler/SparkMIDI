@@ -3,7 +3,8 @@
 int selected_preset;
 bool ui_update_in_progress;
 
-
+int current_preset = -1;
+char current_preset_icon[STR_LEN] = "";
 
 int get_effect_index(char *str) {
   int ind, i;
@@ -381,11 +382,14 @@ void change_hardware_preset(int pres_num) {
   }
 }
 
-void change_custom_preset(SparkPreset *preset, int pres_num) {
-  if (pres_num >= 0 && pres_num <= 4) {
-    preset->preset_num = (pres_num < 4) ? pres_num : 0x7f;
+void change_custom_preset(SparkPreset *preset, int preset_num) {
+  current_preset = preset_num;
+  strncpy(current_preset_icon, preset->Icon, STR_LEN);
+  
+  if (preset_num >= 0 && preset_num <= 4) {
+    preset->preset_num = (preset_num < 4) ? preset_num : 0x7f;
     presets[5] = *preset;
-    presets[pres_num] = *preset;
+    presets[preset_num] = *preset;
     
     last_command_sent="Set preset: "+ String(preset->Name);
     spark_msg_out.create_preset(preset);

@@ -1,0 +1,66 @@
+#line 1 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\Presets\\Alternative\\category.json"
+{
+    "meta": {
+        "id": "36405D73-2844-475B-9622-5BE0DCD25C33",
+        "description": "",
+        "name": "Alternative"
+    },
+    "presets": [
+        {
+            "id": "94109418-E7D9-4B99-83F7-DDB11CA5847D",
+            "description": "Description for Alternative Preset 1",
+            "name": "Spooky Melody",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "E237C4CF-172B-4D68-AA5B-659F57715658",
+            "description": "Description for Alternative Preset 1",
+            "name": "Fuzzy Jam",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "A3601E1D-8018-42A8-9A19-9B6F0DAB6F46",
+            "description": "Description for Alternative Preset 1",
+            "name": "Angry Monkey",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "50A3B945-1A86-4E06-B10B-550E3226DDF2",
+            "description": "Description for Alternative Preset 1",
+            "name": "Hide and Seek",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "960e416b-3731-497d-b811-3dc699bf99fe",
+            "description": "1-Clean",
+            "name": "Nothing else matters",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "8f8ab637-8ade-4a9f-9b36-60d74ed19158",
+            "description": "1-Clean",
+            "name": "Come As You Are - Nirvana",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "4898064e-b1e0-4800-ab84-40b896af4f77",
+            "description": "1-Clean",
+            "name": "Prog Wide Clean",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "8a5e2aa5-f397-463d-972d-d0ec22279e21",
+            "description": "1-Clean",
+            "name": "Mathy Ambience",
+            "version": "0.7",
+            "icon": "icon.png"
+        }
+    ]
+}

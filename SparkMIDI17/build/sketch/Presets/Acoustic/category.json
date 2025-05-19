@@ -1,0 +1,38 @@
+#line 1 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\Presets\\Acoustic\\category.json"
+{
+    "meta": {
+        "id": "5F937EBC-E0A2-11E8-9F32-F2801F1B9FD1",
+        "description": "",
+        "name": "Acoustic"
+    },
+    "presets": [
+        {
+            "id": "57AF2690-F7C8-4766-9A92-F3A51629B959",
+            "description": "Description for Acoustic Preset 1",
+            "name": "Cozy Serenade",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "DEFBB271-B3EE-4C7E-A623-2E5CA53B6DDA",
+            "description": "Description for Acoustic Preset 1",
+            "name": "Studio Session",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "689c7bcd-6c2a-458d-ac73-0429715038df",
+            "description": "Description for Bass Preset 1",
+            "name": "Grunge Acoustic",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "25f25c8a-143c-497e-8d27-1d750a6b3fb1",
+            "description": "Description for Bass Preset 1",
+            "name": "Classic Words Acoustic",
+            "version": "0.7",
+            "icon": "icon.png"
+        }
+    ]
+}

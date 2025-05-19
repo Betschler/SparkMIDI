@@ -84,5 +84,6 @@ Adafruit_SSD1306 display(128, 64, &Wire, -1);
 void splash_screen();
 void setup_screen();
 void show_status();
+void display_preset_icon(const char* icon_path, int x, int y);
 
 #endif

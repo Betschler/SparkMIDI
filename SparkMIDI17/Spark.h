@@ -9,6 +9,9 @@ SparkMessage msg;
 SparkPreset preset;
 SparkPreset presets[6];
 
+extern int current_preset;
+extern char current_preset_icon[STR_LEN];
+
 enum spark_status_values {SPARK_DISCONNECTED, SPARK_CONNECTED, SPARK_COMMUNICATING, SPARK_SYNCING, SPARK_SYNCED};
 spark_status_values spark_state;
 unsigned long spark_ping_timer;

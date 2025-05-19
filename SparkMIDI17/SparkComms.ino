@@ -4,19 +4,16 @@
 const uint8_t notifyOn[] = {0x1, 0x0};
 
 // client callback for connection to Spark
-
-class MyClientCallback : public BLEClientCallbacks
+class MyClientCallback : public NimBLEClientCallbacks
 {
-  void onConnect(BLEClient *pclient)
+  void onConnect(NimBLEClient *pclient)
   {
     DEBUG("callback: Spark connected");
     set_conn_status_connected(SPK);
   }
 
-  void onDisconnect(BLEClient *pclient)
+  void onDisconnect(NimBLEClient *pclient)
   {
-//    if (pclient->isConnected()) {
-
     connected_sp = false;         
     DEBUG("callback: Spark disconnected");   
     set_conn_status_disconnected(SPK);   
@@ -24,10 +21,9 @@ class MyClientCallback : public BLEClientCallbacks
 };
 
 // server callback for connection to BLE app
-
-class MyServerCallback : public BLEServerCallbacks
+class MyServerCallback : public NimBLEServerCallbacks
 {
-  void onConnect(BLEServer *pserver)
+  void onConnect(NimBLEServer *pserver)
   {
      if (pserver->getConnectedCount() == 1) {
       set_conn_status_connected(APP);
@@ -36,12 +32,10 @@ class MyServerCallback : public BLEServerCallbacks
     else {
       DEBUG("callback: BLE app connection event and is not really connected");   
     }
-    
   }
 
-  void onDisconnect(BLEServer *pserver)
+  void onDisconnect(NimBLEServer *pserver)
   {
-//    if (pserver->getConnectedCount() == 1) {
     DEBUG("callback: BLE app disconnected");
     set_conn_status_disconnected(APP);
   }
@@ -49,25 +43,22 @@ class MyServerCallback : public BLEServerCallbacks
 
 // BLE MIDI
 #ifdef BLE_APP_MIDI
-class MyMIDIServerCallback : public BLEServerCallbacks
+class MyMIDIServerCallback : public NimBLEServerCallbacks
 {
-  void onConnect(BLEServer *pserver)
+  void onConnect(NimBLEServer *pserver)
   {
-    //set_conn_status_connected(APP);
     DEBUG("callback: BLE MIDI connected");
   }
 
-  void onDisconnect(BLEServer *pserver)
+  void onDisconnect(NimBLEServer *pserver)
   {
     DEBUG("callback: BLE MIDI disconnected");
-    //set_conn_status_disconnected(APP);
   }
 };
 #endif
 
 #ifdef CLASSIC
 // server callback for connection to BT classic app
-
 void bt_callback(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
   if(event == ESP_SPP_SRV_OPEN_EVT){
     DEBUG("callback: Classic BT Spark app connected");
@@ -81,8 +72,7 @@ void bt_callback(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
 }
 #endif
 
-void notifyCB_sp(BLERemoteCharacteristic* pRemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify) {
-
+void notifyCB_sp(NimBLERemoteCharacteristic* pRemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify) {
   int i;
   byte b;
   
@@ -94,9 +84,7 @@ void notifyCB_sp(BLERemoteCharacteristic* pRemoteCharacteristic, uint8_t* pData,
 }
 
 #ifdef BLE_CONTROLLER
-// This works with IK Multimedia iRig Blueboard and the Akai LPD8 wireless - interestingly they have the same UUIDs
-void notifyCB_pedal(BLERemoteCharacteristic* pRemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify){
-
+void notifyCB_pedal(NimBLERemoteCharacteristic* pRemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify){
   int i;
   byte b;
 
@@ -110,8 +98,8 @@ void notifyCB_pedal(BLERemoteCharacteristic* pRemoteCharacteristic, uint8_t* pDa
 }
 #endif
 
-class CharacteristicCallbacks: public BLECharacteristicCallbacks {
-  void onWrite(BLECharacteristic* pCharacteristic) {
+class CharacteristicCallbacks: public NimBLECharacteristicCallbacks {
+  void onWrite(NimBLECharacteristic* pCharacteristic) {
     for (auto & it : pCharacteristic->getValue()) {
       ble_app_in.add(it);
     }
@@ -121,11 +109,9 @@ class CharacteristicCallbacks: public BLECharacteristicCallbacks {
 
 static CharacteristicCallbacks chrCallbacks_s, chrCallbacks_r;
 
-
-// BLE APP MIDI
 #ifdef BLE_APP_MIDI
-class MIDICharacteristicCallbacks: public BLECharacteristicCallbacks {
-  void onWrite(BLECharacteristic* pCharacteristic) {
+class MIDICharacteristicCallbacks: public NimBLECharacteristicCallbacks {
+  void onWrite(NimBLECharacteristic* pCharacteristic) {
     for (auto & it : pCharacteristic->getValue()) {
       ble_midi_in.add(it);
     }
@@ -136,11 +122,10 @@ class MIDICharacteristicCallbacks: public BLECharacteristicCallbacks {
 static MIDICharacteristicCallbacks chrCallbacksMIDI;
 #endif
 
-BLEUUID SpServiceUuid(C_SERVICE);
+NimBLEUUID SpServiceUuid(C_SERVICE);
 #ifdef BLE_CONTROLLER  
-BLEUUID PedalServiceUuid(PEDAL_SERVICE);
+NimBLEUUID PedalServiceUuid(PEDAL_SERVICE);
 #endif
-
 
 void connect_spark() {
   if (found_sp && !connected_sp) {
@@ -159,7 +144,7 @@ void connect_spark() {
         if (pReceiver_sp && pReceiver_sp->canNotify()) {
 #ifdef CLASSIC
           pReceiver_sp->registerForNotify(notifyCB_sp);
-          p2902_sp = pReceiver_sp->getDescriptor(BLEUUID((uint16_t)0x2902));
+          p2902_sp = pReceiver_sp->getDescriptor(NimBLEUUID((uint16_t)0x2902));
           if (p2902_sp != nullptr)
              p2902_sp->writeValue((uint8_t*)notifyOn, 2, true);
 #else
@@ -176,7 +161,6 @@ void connect_spark() {
   }
 }
 
-
 #ifdef BLE_CONTROLLER
 void connect_pedal() {
   if (found_pedal && !connected_pedal) {
@@ -192,7 +176,7 @@ void connect_pedal() {
         if (pReceiver_pedal && pReceiver_pedal->canNotify()) {
 #ifdef CLASSIC
           pReceiver_pedal->registerForNotify(notifyCB_pedal);
-          p2902_pedal = pReceiver_pedal->getDescriptor(BLEUUID((uint16_t)0x2902));
+          p2902_pedal = pReceiver_pedal->getDescriptor(NimBLEUUID((uint16_t)0x2902));
           if(p2902_pedal != nullptr)
             p2902_pedal->writeValue((uint8_t*)notifyOn, 2, true);
 #else
@@ -217,6 +201,44 @@ bool connect_to_all() {
   uint8_t b;
   unsigned long t;
 
+  DEBUG("DEBUG: Starting connect_to_all()");
+  
+  // Clean up any existing BLE connections
+  DEBUG("DEBUG: Cleaning up existing BLE connections");
+  if (pClient_sp != nullptr) {
+    if (pClient_sp->isConnected()) {
+      pClient_sp->disconnect();
+    }
+    NimBLEDevice::deleteClient(pClient_sp);
+    pClient_sp = nullptr;
+  }
+  
+#ifdef BLE_CONTROLLER
+  if (pClient_pedal != nullptr) {
+    if (pClient_pedal->isConnected()) {
+      pClient_pedal->disconnect();
+    }
+    NimBLEDevice::deleteClient(pClient_pedal);
+    pClient_pedal = nullptr;
+  }
+#endif
+
+  if (pServer != nullptr) {
+    // pServer->stop();  // This method doesn't exist in NimBLE
+    pServer = nullptr;
+  }
+
+  if (pAdvertising != nullptr) {
+    pAdvertising->stop();
+    pAdvertising = nullptr;
+  }
+
+  // Deinitialize BLE stack
+  DEBUG("DEBUG: Deinitializing BLE stack");
+  NimBLEDevice::deinit();
+  DEBUG("DEBUG: Waiting for BLE stack to deinitialize...");
+  delay(1000); // Give more time for cleanup
+  
   // set up connection status tracking array
   t = millis();
   for (i = 0; i < NUM_CONNS; i++) {
@@ -227,19 +249,48 @@ bool connect_to_all() {
 
   is_ble = true;
 
-  BLEDevice::init("Spark 40 MIDI BLE");
-  pClient_sp = BLEDevice::createClient();
+  DEBUG("DEBUG: About to initialize BLE device");
+  NimBLEDevice::init("Spark 40 MIDI BLE");
+  DEBUG("DEBUG: Waiting for BLE stack to initialize...");
+  delay(1000); // Give more time for initialization to complete
+  DEBUG("DEBUG: BLE device initialized");
+  
+  DEBUG("DEBUG: Creating Spark client");
+  pClient_sp = NimBLEDevice::createClient();
+  if (pClient_sp == nullptr) {
+    DEBUG("DEBUG: Failed to create Spark client!");
+    return false;
+  }
+  
+  DEBUG("DEBUG: Setting Spark client callbacks");
   pClient_sp->setClientCallbacks(new MyClientCallback());
   
 #ifdef BLE_CONTROLLER  
-  pClient_pedal = BLEDevice::createClient();
+  DEBUG("DEBUG: Creating pedal client");
+  pClient_pedal = NimBLEDevice::createClient();
+  if (pClient_pedal == nullptr) {
+    DEBUG("DEBUG: Failed to create pedal client!");
+    return false;
+  }
 #endif
-  pScan = BLEDevice::getScan();
   
-  pServer = BLEDevice::createServer();
+  DEBUG("DEBUG: Creating BLE server");
+  pServer = NimBLEDevice::createServer();
+  if (pServer == nullptr) {
+    DEBUG("DEBUG: Failed to create BLE server!");
+    return false;
+  }
+  
+  DEBUG("DEBUG: Setting server callbacks");
   pServer->setCallbacks(new MyServerCallback());  
+  DEBUG("DEBUG: Creating service");
   pService = pServer->createService(S_SERVICE);
+  if (pService == nullptr) {
+    DEBUG("DEBUG: Failed to create service!");
+    return false;
+  }
 
+  DEBUG("DEBUG: Creating characteristics");
 #ifdef CLASSIC  
   pCharacteristic_receive = pService->createCharacteristic(S_CHAR1, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_WRITE_NR);
   pCharacteristic_send = pService->createCharacteristic(S_CHAR2, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
@@ -248,17 +299,22 @@ bool connect_to_all() {
   pCharacteristic_send = pService->createCharacteristic(S_CHAR2, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::NOTIFY); 
 #endif
 
+  if (pCharacteristic_receive == nullptr || pCharacteristic_send == nullptr) {
+    DEBUG("DEBUG: Failed to create characteristics!");
+    return false;
+  }
+
+  DEBUG("DEBUG: Setting characteristic callbacks");
   pCharacteristic_receive->setCallbacks(&chrCallbacks_r);
   pCharacteristic_send->setCallbacks(&chrCallbacks_s);
-#ifdef CLASSIC
-  pCharacteristic_send->addDescriptor(new BLE2902());
-#endif
-
 
 #ifdef BLE_APP_MIDI
-//  pServerMIDI = BLEDevice::createServer();
-//  pServerMIDI->setCallbacks(new MyMIDIServerCallback());  
+  DEBUG("DEBUG: Setting up MIDI service");
   pServiceMIDI = pServer->createService(MIDI_SERVICE);
+  if (pServiceMIDI == nullptr) {
+    DEBUG("DEBUG: Failed to create MIDI service!");
+    return false;
+  }
 
 #ifdef CLASSIC  
   pCharacteristicMIDI = pServiceMIDI->createCharacteristic(MIDI_CHAR, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_WRITE_NR | BLECharacteristic::PROPERTY_NOTIFY);
@@ -266,28 +322,41 @@ bool connect_to_all() {
   pCharacteristicMIDI = pServiceMIDI->createCharacteristic(MIDI_CHAR, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::WRITE | NIMBLE_PROPERTY::WRITE_NR | NIMBLE_PROPERTY::NOTIFY);
 #endif
 
+  if (pCharacteristicMIDI == nullptr) {
+    DEBUG("DEBUG: Failed to create MIDI characteristic!");
+    return false;
+  }
+
   pCharacteristicMIDI->setCallbacks(&chrCallbacksMIDI);
-#ifdef CLASSIC
-  pCharacteristicMIDI->addDescriptor(new BLE2902()); 
-#endif
 #endif
 
-
+  DEBUG("DEBUG: Starting services");
   pService->start();
 #ifdef BLE_APP_MIDI
   pServiceMIDI->start();
 #endif
 
 #ifndef CLASSIC
+  DEBUG("DEBUG: Starting server");
   pServer->start(); 
 #endif
 
-  pAdvertising = BLEDevice::getAdvertising(); // create advertising instance
-  pAdvertising->addServiceUUID(pService->getUUID()); // tell advertising the UUID of our service
+  DEBUG("DEBUG: Setting up advertising");
+  pAdvertising = NimBLEDevice::getAdvertising();
+  if (pAdvertising == nullptr) {
+    DEBUG("DEBUG: Failed to create advertising object!");
+    return false;
+  }
+  
+  pAdvertising->addServiceUUID(pService->getUUID());
 #ifdef BLE_APP_MIDI
-  pAdvertising->addServiceUUID(pServiceMIDI->getUUID()); // tell advertising the UUID of our service
+  pAdvertising->addServiceUUID(pServiceMIDI->getUUID());
 #endif
-  pAdvertising->setScanResponse(true);  
+
+  // Create scan response data
+  NimBLEAdvertisementData scanResponse;
+  scanResponse.setName("Spark 40 MIDI BLE");
+  pAdvertising->setScanResponseData(scanResponse);
 
   // Connect to Spark
   connected_sp = false;
@@ -298,66 +367,101 @@ bool connect_to_all() {
   found_pedal = false;
 #endif
 
-DEBUG("Scanning...");
+  DEBUG("DEBUG: Starting BLE scan loop");
 
-  counts = 0;
-  while (!found_sp && counts < MAX_SCAN_COUNT) {   // assume we only use a pedal if on already and hopefully found at same time as Spark, don't wait for it
-    counts++;
-    pResults = pScan->start(4);
+  int scan_count = 0;
+  while (!found_sp && scan_count < MAX_SCAN_COUNT) {
+    scan_count++;
+    String scanMsg = "Scan attempt " + String(scan_count) + " of " + String(MAX_SCAN_COUNT);
+    DEBUG(scanMsg.c_str());
     
-    for(i = 0; i < pResults.getCount()  && !found_sp; i++) {
-      device = pResults.getDevice(i);
+    DEBUG("DEBUG: Creating new scan object");
+    // Create a new scan object for each attempt
+    NimBLEScan* pScan = NimBLEDevice::getScan();
+    if (pScan == nullptr) {
+      DEBUG("DEBUG: Failed to create scan object!");
+      return false;
+    }
 
-      if (device.isAdvertisingService(SpServiceUuid)) {
-        DEBUG("Found Spark");
-        found_sp = true;
-        connected_sp = false;
-        sp_device = new BLEAdvertisedDevice(device);
+    
+    DEBUG("DEBUG: Getting scan results (will wait up to 10 seconds)");
+    NimBLEScanResults results = pScan->getResults(10000, true);  // Changed to true to wait for scan to complete
+    DEBUG("DEBUG: Scan completed");
+    
+    String deviceMsg = "Found " + String(results.getCount()) + " devices";
+    DEBUG(deviceMsg.c_str());
+    
+    DEBUG("DEBUG: Processing scan results");
+    for(i = 0; i < results.getCount(); i++) {
+      const NimBLEAdvertisedDevice* device = results.getDevice(i);
+      if (device == nullptr) {
+        DEBUG("DEBUG: Null device in results!");
+        continue;
       }
       
+      String deviceInfo = "Device " + String(i) + ": " + String(device->getName().c_str()) + " (Address: " + String(device->getAddress().toString().c_str()) + ")";
+      DEBUG(deviceInfo.c_str());
+      
+      if (device->isAdvertisingService(SpServiceUuid)) {
+        String sparkMsg = "Found Spark device: " + String(device->getName().c_str());
+        DEBUG(sparkMsg.c_str());
+        found_sp = true;
+        connected_sp = false;
+        sp_device = const_cast<NimBLEAdvertisedDevice*>(device);
+        break;  // Found a Spark device, no need to continue scanning
+      }
 #ifdef BLE_CONTROLLER
-      if (device.isAdvertisingService(PedalServiceUuid) || strcmp(device.getName().c_str(),"iRig BlueBoard") == 0) {
-        DEBUG("Found pedal");
+      else if (device->isAdvertisingService(PedalServiceUuid) || strcmp(device->getName().c_str(),"iRig BlueBoard") == 0) {
+        String pedalMsg = "Found pedal device: " + String(device->getName().c_str());
+        DEBUG(pedalMsg.c_str());
         found_pedal = true;
         connected_pedal = false;
-        pedal_device = new BLEAdvertisedDevice(device);
+        pedal_device = const_cast<NimBLEAdvertisedDevice*>(device);
       }
 #endif
     }
+
+    if (!found_sp) {
+      DEBUG("DEBUG: No Spark devices found in this scan");
+    }
+    
+    DEBUG("DEBUG: Cleaning up scan results");
+    pScan->clearResults();
+    delay(1000); // Give more time between scans
   }
 
-  if (!found_sp) return false;   // failed to find the Spark within the number of counts allowed (MAX_SCAN_COUNT)
+  if (!found_sp) {
+    String failMsg = "Failed to find Spark after " + String(MAX_SCAN_COUNT) + " attempts";
+    DEBUG(failMsg.c_str());
+    return false;
+  }
   
-    // Set up client
+  DEBUG("DEBUG: Attempting to connect to Spark");
   connect_spark();
 #ifdef BLE_CONTROLLER
+  DEBUG("DEBUG: Attempting to connect to pedal");
   connect_pedal();
 #endif    
 
 #ifdef CLASSIC
-  DEBUG("Starting classic bluetooth");
-  // now advertise Serial Bluetooth
+  DEBUG("DEBUG: Starting classic bluetooth");
   bt = new BluetoothSerial();
   bt->register_callback(bt_callback);
-  if (!bt->begin (SPARK_BT_NAME)) {
-    DEBUG("Classic bluetooth init fail");
+  if (!bt->begin(SPARK_BT_NAME)) {
+    DEBUG("DEBUG: Classic bluetooth init failed");
     while (true);
   }
 
-  // flush anything read from App - just in case
   while (bt->available())
     b = bt->read(); 
-  DEBUG("Spark 40 Audio set up");
+  DEBUG("DEBUG: Spark 40 Audio set up");
 #endif
 
-  DEBUG("Available for app to connect...");  
+  DEBUG("DEBUG: BLE setup complete, starting advertising");
   pAdvertising->start(); 
   return true;
 }
 
-
-// app_available both returns whether any data is available but also selects which type of bluetooth to use based
-// on whether there is any input there
 bool app_available() {
   if (!ble_app_in.is_empty()) {
     is_ble = true;
@@ -369,7 +473,6 @@ bool app_available() {
     return true;
   }
 #endif
-  // if neither have input, then there definitely is no input
   return false;
 }
 
@@ -384,8 +487,6 @@ uint8_t app_read() {
   else
     return bt->read();
 #endif
-
-  // never gets here but stops compiler warning
   return 0;
 }
 
@@ -402,8 +503,7 @@ void app_write(byte *buf, int len) {
 #endif
 }
 
-
-void app_write_timed(byte *buf, int len) {               // same as app_write but with a slight delay for classic bluetooth - it seems to need it
+void app_write_timed(byte *buf, int len) {
   set_conn_sent(APP);
   if (is_ble) {
     pCharacteristic_send->setValue(buf, len);
@@ -412,7 +512,7 @@ void app_write_timed(byte *buf, int len) {               // same as app_write bu
 #ifdef CLASSIC 
   else {
     bt->write(buf, len);
-    delay(50);                // this helps the timing of a 'fake' store hardware preset
+    delay(50);
   }
 #endif
 }
@@ -434,7 +534,6 @@ void sp_write(byte *buf, int len) {
   pSender_sp->writeValue(buf, len, false);
 }
 
-// for some reason getRssi() crashes with two clients!
 int ble_getRSSI() { 
 #ifdef BLE_CONTROLLER  
   return 0;
@@ -442,10 +541,6 @@ int ble_getRSSI() {
   return pClient_sp->getRssi();
 #endif
 }
-
-
-// Code to enable UI changes
-
 
 void set_conn_received(int connection) {
   conn_last_changed[FROM][connection] = millis();

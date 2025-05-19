@@ -1,0 +1,108 @@
+#line 1 "B:\\GIT\\SparkMIDI\\SparkMIDI17\\Presets\\Metal\\category.json"
+{
+    "meta": {
+        "id": "0740EC72-E0A2-11E8-9F32-F2801F1B9FD1",
+        "description": "",
+        "name": "Metal"
+    },
+    "presets": [
+        {
+            "id": "96E26248-0AA3-4D45-B767-8BB9337346C9",
+            "description": "Description for Metal Preset 1",
+            "name": "Iron Hammer",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "82C5B8E8-7889-4302-AC19-74DF543872E1",
+            "description": "Description for Metal Preset 1",
+            "name": "Millenial Lead",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "5F27120E-5119-4923-ADA9-42CCB5B01A95",
+            "description": "Description for Metal Preset 1",
+            "name": "Heavy Axe",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "961F7F40-77C3-4E98-A694-DF9CA4069955",
+            "description": "Description for Rock Preset 1",
+            "name": "Dual Train",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "c5ae5911-524e-4835-b3f2-1e6b18d1c6d1",
+            "description": "",
+            "name": "Master of puppets",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "9124aff7-c0e0-4482-861a-b379acb873b0",
+            "description": "shredder's delight",
+            "name": "Metallica",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "57a58b09-127a-4d0f-96f4-e5076de8a367",
+            "description": "Tubescreamer, Fireball, EQ, Reverb",
+            "name": "Engl Fireball",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "c2f24f45-414d-454b-8948-a1702bbe7d03",
+            "description": "real heavy dark sabbathy tone \/ btw all my presets I play thru headphones.",
+            "name": "The mighty sabbath",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "bdea1922-758b-4432-9881-0af50d81e524",
+            "description": "1-Clean",
+            "name": "Clean Rhythm Delay",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "1607743b-aca5-43bf-82b5-cf7183831190",
+            "description": "4-Metal",
+            "name": "Whirlwind of Souls",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "3f121d67-2b2e-4090-bf95-9052630429c8",
+            "description": "Randy Rhoads Crazy Train",
+            "name": "Crazy Train",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "162015cf-895b-44f7-a845-09bc7c1a2fe6",
+            "description": "Lateralus album distortion tone.",
+            "name": "Tool Adam Jones distorted tone",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "89d4f837-8ff8-4ebc-a4a0-5811950b02b0",
+            "description": "4-Metal",
+            "name": "It Does Djent",
+            "version": "0.7",
+            "icon": "icon.png"
+        },
+        {
+            "id": "5f55b56c-09e2-48ef-8841-09f62fc55542",
+            "description": "Rectifier Madness.  This has all the low end growl all you metal heads love.  Punchy lows with a scooped mid.  Haunting harmonics with this wall of thunder.  Bare bones...screamer, and EQ...doesn't need much else.",
+            "name": "Death March",
+            "version": "0.7",
+            "icon": "icon.png"
+        }
+    ]
+}
